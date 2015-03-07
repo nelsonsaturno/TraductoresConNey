@@ -21,10 +21,13 @@ import parser
 def main():
 
 	if (len(sys.argv) > 1):
-		te = lexer.lexicografico(sys.argv[1])
-		if te:
-			te[0].lexer.lineno = 0
-		parser.AnalizadorParser(sys.argv[1])
+		if len(sys.argv) == 3:
+			if sys.argv[1] == "-t":
+				te = lexer.lexicografico(sys.argv[2],"imprime")
+				if te:
+					te[0].lexer.lineno = 0
+				
+		parser.AnalizadorParser(sys.argv[2])
 	else:
 		print "Verifique que la sintaxis introducida es correcta."
 		print ".\\setlan.py <nombre del archivo>\n"
