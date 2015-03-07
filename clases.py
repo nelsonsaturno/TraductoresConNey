@@ -484,9 +484,6 @@ class Declaracion:
 
 		return New_TS
 
-	# def print_type_check(self,espacio,Tabla):
-	# 	print espacio, "SCOPE "
-
 
  # Clase que define al BLOQUE
 class Bloque:

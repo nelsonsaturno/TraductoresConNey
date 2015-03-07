@@ -231,7 +231,6 @@ def p_Declaracion(p):
 								 | epsilon'''
 	if len(p) == 4:
 		p[0] = Clase.Declaracion(p[2])
-		print "estoy entrando aqui"
 
 
 # Gramatica para los tipos
