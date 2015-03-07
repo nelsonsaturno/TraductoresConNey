@@ -3,17 +3,22 @@ program {
 	using
 
 		int a,b;
+		bool d;
 		set c;
-	
-	in
 
-	c = {1,2,3};
+	in
 
 	a = 3;
 
-	b = a;
+	if (a == 3){
+		using
+			int e;
+		in
+		e = a;
+		b = 4;
+	}
+	else
+		b = 5;
 
-	scan c;
-
-	b = >? {4,1,2} /= 4 * 1;
+	#b = >? {4,1,2} /= 4 * 1;
 }
