@@ -231,6 +231,7 @@ def p_Declaracion(p):
 								 | epsilon'''
 	if len(p) == 4:
 		p[0] = Clase.Declaracion(p[2])
+		print "estoy entrando aqui"
 
 
 # Gramatica para los tipos
@@ -262,7 +263,7 @@ def p_Cuerpo(p):
 # Gramatica para el IF
 def p_Condicion(p):
 	'''Condicion : If Par_Abre Expresion Par_Cierra Cuerpo
-							 | If Par_Abre Expresion Par_Cierra Cuerpo Condicion_Else_If'''
+							 | If Par_Abre Expresion Par_Cierra Cuerpo Condicion_Else'''
 	if len(p) == 6:
 		p[0] = Clase.Condicion(p[5],p[3])
 	elif len(p) == 7:
@@ -272,10 +273,10 @@ def p_Condicion(p):
 # Gramatica para el ELSE
 def p_Condicion_Else(p):
 	'''Condicion_Else : Else Cuerpo'''
-	if len(p) == 3:
-		p[0] = Clase.Condicion(p[2])
-	elif len(p) == 2: 
-		p[0] = Clase.Condicion(p[1])
+	# if len(p) == 3:
+	p[0] = Clase.Condicion(p[2])
+	# elif len(p) == 2: 
+	# 	p[0] = Clase.Condicion(p[1])
 
 
 # Gramatica para el ELSE IF
@@ -420,14 +421,14 @@ def AnalizadorParser(Archivo):
 
 
 		tokens = lexer.tokens
-		#tokensEncontrados = Lexer.AnalizadorLex(ArchivoTrinitytxt)
+		#tokensEncontrados = Lexer.AnalizadorLex(ArchivoSetlantxt)
 
 		#Se abre el archivo 
 		ArchivoSetlan = open(Archivo, 'r')
 		
 		global data
 
-		#Se guarda en data lo que se encuentra en el ArchivoTrinity
+		#Se guarda en data lo que se encuentra en el ArchivoSetlan
 		data = ArchivoSetlan.read()
 
 		# Construimos el parser
