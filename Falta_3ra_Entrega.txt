@@ -1,0 +1,29 @@
+#######################################
+
+LO QUE FALTA ARREGLAR PARA 3RA ENTREGA
+
+#######################################
+
+
+*) Falta la parte de nelson de declarar con comas en el using
+	ej: int a,b,c;
+
+*) Falta arreglar en el IF:
+	-) No ve el ELSE IF... pone el ELSE y luego como si viniera un IF de nuevo
+	-) Repite "Instruccion"
+	-) PROBAR HACIENDO 2 CLASES, una para ELSE y otra para ELSE IF
+
+*) Falta agregar la gramatica set y su respectiva clase
+	Cosas como esta:
+		b = >? {4,1,2} /= 4 * 1;
+	no la acepta.
+
+
+________________________________________________________________________________
+
+
+PREGUNTAS
+
+*) Para que es el addSymbol y born, los tengo que poner?
+*) Que es el dic = {} y sons = []
+*) hasKey o has_key?

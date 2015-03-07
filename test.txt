@@ -1,0 +1,17 @@
+program {
+    using
+        int x,y,z;
+    in
+    
+    scan x;
+    println "Hola, soy la variable x, valgo: ", x;
+    y <= x >< 2;
+    y >< 0;
+    # Hola, soy un comentario y no un token. Seamos amigos, :).
+
+    >? {4,1,2} == 4;
+    <? {4,1,2} == 1;
+    $? {4,1,2} == 3;
+
+    2 @ {1,2} == true;
+}
