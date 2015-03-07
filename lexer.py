@@ -158,7 +158,7 @@ def t_error(t):
 
 # Funcion que verifica si se encontro algun error, en este caso se imprime en pantalla
 # En caso contrario se imprimen los tokens encontrados.
-def lexicografico(archivo,imprimir=None):
+def lexicografico(archivo):
 	# Lista en la que se guardan los tokens encontrados en el archivo de texto
 	tokensEncontrados =[]
 
@@ -188,42 +188,21 @@ def lexicografico(archivo,imprimir=None):
 		print 'ERROR: No se pudo abrir el archivo \"%s\".' % archivo
 		exit()
 
-	if imprimir:
-		# Se imprimen los errores o tokens encontrados
-		if (len(listaErrores) == 0):
-			for a in tokensEncontrados:
-				print "token " + a.type.upper(),
-				if (a.type == "Llave_Cierra")|(a.type == "Llave_Abre")|\
-					 (a.type == "GreaterEqual")|(a.type == "NumElemConj")|\
-					 (a.type == "Par_Cierra")|(a.type == "LessEqual"):
-					print "	value (",
-				else:
-					print "		value (",
-				if (a.type == "ID")|(a.type == "String"):
-					print "\""+a.value+"\"" + " )",
-				else:
-					print str(a.value) + " )",
-				if (a.lineno > 1):
-					print "(Linea " + str(a.lineno) + ", Columna " + \
-								str(find_column(data2,a)) + ")"
-				else:
-					print "(Linea " + str(a.lineno) + ", Columna " + \
-								str(find_column(data2,a)+1) + ")"
+	# Se imprimen los errores o tokens encontrados
+	if (len(listaErrores) == 0):
+		pass
+	else:
+		for b in listaErrores:
+			if (b.lineno > 1):
+				print "Error: Se encontró un caracter inesperado " + "'"+\
+							b.value[0]+"'" + " en Linea " + str(b.lineno)+", Columna "+\
+							str(find_column(data2,b)) + "."
+			else:
+				print "Error: Se encontró un caracter inesperado " + "'"+b.value[0]+\
+							"'" + " en Linea " + str(b.lineno)+", Columna "+\
+							str(find_column(data2,b)+1) + "."
 			lexer.lineno =1
-		else:
-			for b in listaErrores:
-				if (b.lineno > 1):
-					print "Error: Se encontró un caracter inesperado " + "'"+\
-								b.value[0]+"'" + " en Linea " + str(b.lineno)+", Columna "+\
-								str(find_column(data2,b)) + "."
-				else:
-					print "Error: Se encontró un caracter inesperado " + "'"+b.value[0]+\
-								"'" + " en Linea " + str(b.lineno)+", Columna "+\
-								str(find_column(data2,b)+1) + "."
-				lexer.lineno =1
-			exit()
-
-
+		exit()
 
 
 

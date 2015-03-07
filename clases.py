@@ -334,9 +334,7 @@ class Asignacion:
 
 		else:
 			Tipo_id = self.identificador.type_check(TablaSimbolos)
-			print Tipo_id, "tipo id"
 			Tipo_exp = self.expresion.type_check(TablaSimbolos)
-			print Tipo_exp, "tipo exp"
 
 			#if Tipo_id == "number" or Tipo_id == "boolean" or Tipo_exp == "number" or Tipo_exp == "boolean":
 			if Tipo_id <> Tipo_exp:
