@@ -105,7 +105,7 @@ class Program:
 
 	def __init__(self,cuerpo):
 		self.cuerpo = cuerpo
-		#self.imprimir("")
+		self.imprimir("")
 		New_TS = TablaSimbolos(None)
 		self.type_check(New_TS)
 
@@ -115,7 +115,6 @@ class Program:
 		print espacio, "PROGRAM_END"
 
 	def type_check(self,TablaSimbolos):
-		print "EPA"
 		self.cuerpo.type_check(TablaSimbolos)
 
 
@@ -123,7 +122,10 @@ class Program:
 class Boolean:
 
 	def __init__(self,value):
-		self.value = value
+		if value == None:
+			self.value = "false"
+		else:
+			self.value = value						
 		self.type = "boolean"
 
 	def getValue(self):
@@ -149,10 +151,8 @@ class Identificador:
 		print espacio, "Variable ", str(self.value)
 
 	def type_check(self,TablaSimbolos):
-		print TablaSimbolos.dic, "ID"
 		if TablaSimbolos.contains(self.value) == False:
 			print "ERROR: El identificador no se encuentra en la Tabla de Simbolos: " + str(self.value)
-			print TablaSimbolos.dic, "ID2"
 			sys.exit(1)
 
 		return TablaSimbolos.Tipo(self.value)
@@ -179,7 +179,10 @@ class String:
 class Number:
 
 	def __init__(self,numero):
-		self.numero = numero
+		if numero == None:
+			self.numero = 0
+		else:
+			self.numero = numero
 		self.type = "int"
 
 	def getValue(self):
@@ -215,19 +218,15 @@ class Sets:
 	#  REVISAR
 	
 	def type_check(self,TablaSimbolos):
-		#return self.type
-		if TablaSimbolos.contains(self.identificador.getValue()) == False:
-			print "ERROR: La variable '" + str(self.identificador.getValue()) + "' no ha sido declarada"
-			sys.exit(1)
-
-		else:
-			Tipo_id = self.identificador.type_check(TablaSimbolos)
-			Tipo_lista = self.listaNum.type_check(TablaSimbolos)
-
-			#if Tipo_id == "number" or Tipo_id == "boolean" or Tipo_lista == "number" or Tipo_lista == "boolean":
-			if Tipo_id <> Tipo_lista:
-				print "ERROR: El tipo del identificador y de la expresion son distintos"
-				sys.exit(1)
+		if isinstance(self.lista,list):
+			for i in self.lista:
+				if i.type_check(TablaSimbolos):
+					pass
+				else:
+					print "ERROR: No se puede asignar '" + str(i) + \
+								"' al dentro del conjunto"
+  	 			sys.exit(1)
+			return self.type
 
 	#############
 
@@ -432,8 +431,6 @@ class Lista_Declaracion_Base:
 			self.expresion.imprimir(Identacion(espacio))
 
 	def type_check(self,TablaSimbolos):
-
-		print "estoy entrando aqui"
 		for i in self.identificador:
 			if TablaSimbolos.dic.has_key(i.getValue()):
 				print "ERROR: Variable declarada dentro del alcance"
@@ -446,17 +443,7 @@ class Lista_Declaracion_Base:
 						print "ERROR: El tipo del identificador y la expresion son distintos"
 						sys.exit(1)
 
-
-			if i.getValue():
-				print i.getValue()
-			else:
-				print "Soy NULO"
 			TablaSimbolos.insert(i.getValue(),self.tipo)
-
-			print TablaSimbolos.dic
-			print i.getValue(), "value"
-			print self.tipo, "tipo"
-			print "hice el insert"
 
 
 # Clase que define la LISTA DE DECLARACIONES
@@ -479,10 +466,21 @@ class Declaracion:
 			print "SCOPE "
 			for i in self.lista:
 				if isinstance(i, Lista_Declaracion_Base):
-					i.type_check(New_TS)	
+					i.type_check(New_TS)
 				else:
 					print "ERROR: Dentro del alcance del USING ... IN solo puede aparecer la 'Declaracion de Variables'"
 					sys.exit(1)
+			
+			for i in New_TS.dic:
+				if New_TS.dic[i] == "int":
+					valor = 0
+				if New_TS.dic[i] == "string":
+					valor = ""
+				if  New_TS.dic[i] == "bool":
+					valor = "false"
+				if New_TS.dic[i] == "set":
+					valor = "{}"
+				print "  ","Variable: ", i, "Tipo: ", New_TS.dic[i], "Valor: ", valor
 
 		return New_TS
 
@@ -511,7 +509,6 @@ class Bloque:
 		TablaSimbolos = self.declaracion.type_check(TablaSimbolos)
 
 		for i in self.instruccion:
-			print "estoy viendo las instrucciones"
 			i.type_check(TablaSimbolos)
 
 

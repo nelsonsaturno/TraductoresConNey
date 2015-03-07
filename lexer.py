@@ -190,7 +190,25 @@ def lexicografico(archivo):
 
 	# Se imprimen los errores o tokens encontrados
 	if (len(listaErrores) == 0):
-		pass
+		for a in tokensEncontrados:
+			print "token " + a.type.upper(),
+			if (a.type == "Llave_Cierra")|(a.type == "Llave_Abre")|\
+				 (a.type == "GreaterEqual")|(a.type == "NumElemConj")|\
+				 (a.type == "Par_Cierra")|(a.type == "LessEqual"):
+				print "	value (",
+			else:
+				print "		value (",
+			if (a.type == "ID")|(a.type == "String"):
+				print "\""+a.value+"\"" + " )",
+			else:
+				print str(a.value) + " )",
+			if (a.lineno > 1):
+				print "(Linea " + str(a.lineno) + ", Columna " + \
+							str(find_column(data2,a)) + ")"
+			else:
+				print "(Linea " + str(a.lineno) + ", Columna " + \
+							str(find_column(data2,a)+1) + ")"
+		lexer.lineno =1
 	else:
 		for b in listaErrores:
 			if (b.lineno > 1):
