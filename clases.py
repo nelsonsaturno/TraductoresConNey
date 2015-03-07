@@ -6,7 +6,6 @@
 ##															    SETLAN												  		   ##
 #############################################################################
 #																																						#
-#														---(Tercera Entrega)---									 				#
 #														 ANALIZADOR SINTÁCTICO													#
 #																		Clases																	#
 #Integrantes:																																#
@@ -105,7 +104,7 @@ class Program:
 
 	def __init__(self,cuerpo):
 		self.cuerpo = cuerpo
-		self.imprimir("")
+		#self.imprimir("")
 		New_TS = TablaSimbolos(None)
 		self.type_check(New_TS)
 
@@ -464,13 +463,16 @@ class Declaracion:
 
 		if self.lista:
 			print "SCOPE "
-			for i in self.lista:
-				if isinstance(i, Lista_Declaracion_Base):
-					i.type_check(New_TS)
-				else:
-					print "ERROR: Dentro del alcance del USING ... IN solo puede aparecer la 'Declaracion de Variables'"
-					sys.exit(1)
-			
+			if isinstance(self.lista,list):
+				for i in self.lista:
+					if isinstance(i, Lista_Declaracion_Base):
+						i.type_check(New_TS)
+					else:
+						print "ERROR: Dentro del alcance del USING ... IN solo puede aparecer la 'Declaracion de Variables'"
+						sys.exit(1)
+			else:
+				self.lista.type_check(New_TS)
+
 			for i in New_TS.dic:
 				if New_TS.dic[i] == "int":
 					valor = 0
@@ -480,9 +482,13 @@ class Declaracion:
 					valor = "false"
 				if New_TS.dic[i] == "set":
 					valor = "{}"
-				print "  ","Variable: ", i, "Tipo: ", New_TS.dic[i], "Valor: ", valor
+				print "  ","Variable: ", i, "| Tipo: ", New_TS.dic[i], "| Valor: ", valor
 
 		return New_TS
+
+	# def print_type_check(self,espacio,Tabla):
+	# 	print espacio, "SCOPE "
+
 
  # Clase que define al BLOQUE
 class Bloque:
@@ -515,11 +521,11 @@ class Bloque:
 # Clase que define la CONDICION
 class Condicion:
 
-	def __init__(self,cuerpo,expresion=None,condicion_Else=None,condicion_ElseIf=None):
+	def __init__(self,cuerpo,expresion=None,condicion_Else=None):
 		self.cuerpo = cuerpo
 		self.expresion = expresion
 		self.condicion_Else = condicion_Else
-		self.condicion_ElseIf = condicion_ElseIf
+		#self.condicion_ElseIf = condicion_ElseIf
 
 	def imprimir(self,espacio):
 		if self.expresion:
@@ -537,15 +543,15 @@ class Condicion:
 			self.cuerpo.imprimir(Identacion(espacio))
 
 		# si existe else if imprime
-		if self.condicion_ElseIf:
-			print espacio, "ELSE IF "
-			if isinstance(self.condicion_ElseIf,list):
-				for k in self.condicion_ElseIf:
-					print espacio, "Instruciones: "
-					k.imprimir(Identacion(espacio)) #imprime las instrucciones del else if
-			else:
-				print espacio, "Instruccion: "
-				self.condicion_ElseIf.imprimir(Identacion(espacio))
+		# if self.condicion_ElseIf:
+		# 	print espacio, "ELSE IF "
+		# 	if isinstance(self.condicion_ElseIf,list):
+		# 		for k in self.condicion_ElseIf:
+		# 			print espacio, "Instruciones: "
+		# 			k.imprimir(Identacion(espacio)) #imprime las instrucciones del else if
+		# 	else:
+		# 		print espacio, "Instruccion: "
+		# 		self.condicion_ElseIf.imprimir(Identacion(espacio))
 
 		# si existe else imprime
 		if self.condicion_Else:
