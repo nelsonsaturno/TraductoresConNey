@@ -3,6 +3,7 @@ program {
 	using
 
 		int a,b;
+		int e;
 		bool d;
 		set c;
 
@@ -14,7 +15,6 @@ program {
 	a = 3;
 	a = 4 * 5;
 	print a;
-	#b = 5;
 #	b = 5;
 
 #	if (a == 3){

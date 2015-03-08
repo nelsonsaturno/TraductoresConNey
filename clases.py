@@ -14,6 +14,7 @@
 #												 																										#
 #############################################################################
 
+
 import sys
 
 # DICCIONARIO DE SIMBOLOS
@@ -120,6 +121,7 @@ class Program:
 		self.cuerpo.type_check(TablaSimbolos)
 
 	def execute(self,dic):
+		print "estoy en program"
 		Results.append(dic)
 		self.cuerpo.execute(dic)
 
@@ -208,10 +210,7 @@ class String:
 class Number:
 
 	def __init__(self,numero):
-		if numero == None:
-			self.numero = 0
-		else:
-			self.numero = numero
+		self.numero = numero
 		self.type = "int"
 
 	def getValue(self):
@@ -224,7 +223,6 @@ class Number:
 		return self.type
 
 	def execute(self,dic):
-		print self.getValue()
 		return self.getValue()
 
 
@@ -379,9 +377,8 @@ class Asignacion:
 				print "ERROR: El tipo del identificador y de la expresion son distintos"
 				sys.exit(1)
 
-		# print "antes de insertar en la tabla"
+		#TablaSimbolos.insert(self.identificador.getValue(),self.expresion)
 		# Tabla.insert(self.identificador.getValue(),self.expresion)
-		# print "despues de insertar en la tabla"
 
 	def execute(self,dic):
 		dic[self.identificador.getValue()] = self.expresion.execute(dic)
@@ -918,7 +915,7 @@ class Exp_Binaria:
 		if isinstance(self.exp_der, Exp_Unaria):
 			self.exp_der = self.exp_der.type_check(TablaSimbolos)
 
-		# Tipo number op number = number
+		# Tipo int op int = int
 		A = self.operador == "+"
 		B = self.operador == "-"
 		C = self.operador == "*"
@@ -930,26 +927,26 @@ class Exp_Binaria:
 		G = self.operador == "\\"
 		I = self.operador == "><"
 
-		# Tipo number op set = set
+		# Tipo int op set = set
 		J = self.operador == "<+>"
 		K = self.operador == "<->"
 		L = self.operador == "<*>"
 		M = self.operador == "</>"
 		N = self.operador == "<%>"
 
-		# Tipo number op number = bool
+		# Tipo int op int = bool
 		# Tipo set op set = bool
 		# Tipo bool op bool = bool
 		O = self.operador == "=="
 		P = self.operador == "/="
 
-		# Tipo number op number = bool
+		# Tipo int op int = bool
 		Q = self.operador == ">"
 		R = self.operador == "<"
 		S = self.operador == ">="
 		T = self.operador == "<="
 
-		# Tipo number op set = bool
+		# Tipo int op set = bool
 		U = self.operador == "@"
 		
 		# Tipo bool op bool = bool
