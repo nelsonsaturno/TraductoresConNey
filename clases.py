@@ -456,7 +456,7 @@ class Imprimir_Expresion:
   def execute(self,dic):
   	aux = ""
   	for j in self.ImprimeExpresion:
-  		aux = aux + " " +str(j.execute(dic))
+  		aux = aux + str(j.execute(dic)) + " "
 		print aux
 
 

@@ -9,7 +9,7 @@ program {
 	in
 
 	#a = 3;
-	print "hola";
+	print "hola mirame";
 	#b = 5;
 #	b = 5;
 
