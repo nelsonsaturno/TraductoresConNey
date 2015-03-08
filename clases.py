@@ -144,6 +144,7 @@ class Boolean:
 		return self.type
 
 	def execute(self,dic):
+		print "Estoy en execute de bool"
 		if self.value == "true":
 			return True
 		elif self.value == "false":
@@ -223,6 +224,7 @@ class Number:
 		return self.type
 
 	def execute(self,dic):
+		print self.getValue()
 		return self.getValue()
 
 
@@ -452,12 +454,9 @@ class Imprimir_Expresion:
   		i.type_check(TablaSimbolos)
 
   def execute(self,dic):
-
   	aux = ""
-
   	for j in self.ImprimeExpresion:
-  		aux = aux + " " +str(j.run(dic))
-
+  		aux = aux + " " +str(j.execute(dic))
 		print aux
 
 
@@ -509,7 +508,8 @@ class Lista_Declaracion_Base:
 			TablaSimbolos.insert(i.getValue(),self.tipo)
 
 	def execute(self,dic):
-		dic[self.identificador.getValue()] = self.tipo
+		for i in self.identificador:
+			dic[i.getValue()] = self.tipo
 
 
 # Clase que define la LISTA DE DECLARACIONES
@@ -560,9 +560,8 @@ class Declaracion:
 		return New_TS
 
 	def execute(self,dic):
-		if isinstance(self.lista,Lista_Declaracion_Base):
-			print "Si soy"
-		self.lista.execute(dic)
+		for i in self.lista:
+			i.execute(dic)
 
 
 # Clase que define al BLOQUE
