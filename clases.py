@@ -109,6 +109,7 @@ class Program:
 		#self.imprimir("")
 		New_TS = TablaSimbolos(None)
 		self.type_check(New_TS)
+		#self.execute({})
 
 	def imprimir(self,espacio):
 		print espacio, "PROGRAM "
@@ -117,6 +118,10 @@ class Program:
 
 	def type_check(self,TablaSimbolos):
 		self.cuerpo.type_check(TablaSimbolos)
+
+	def execute(self,dic):
+		Results.append(dic)
+		self.cuerpo.execute(dic)
 
 
 # Clase que defina a los boolean
@@ -441,6 +446,10 @@ class Imprimir_Expresion:
 
 # Clase que define la LISTA DE DECLARACIONES BASE
 class Lista_Declaracion_Base:
+	"""
+		<tipo> <identificador>;
+
+	"""
 
 	def __init__(self,tipo,identificador,expresion=None):
 		self.tipo = tipo
@@ -482,9 +491,18 @@ class Lista_Declaracion_Base:
 
 			TablaSimbolos.insert(i.getValue(),self.tipo)
 
+	def execute(self,dic):
+		dic[self.identificador.getValue()] = self.tipo
+
 
 # Clase que define la LISTA DE DECLARACIONES
 class Declaracion:
+	"""
+		USING
+			<Lista_Declaracion_Base>
+		IN
+
+	"""
 
 	def __init__(self,lista):
 		self.lista = lista
@@ -524,10 +542,20 @@ class Declaracion:
 
 		return New_TS
 
+	def execute(self,dic):
+		self.lista.execute(dic)
 
- # Clase que define al BLOQUE
+
+# Clase que define al BLOQUE
 class Bloque:
-	
+	"""
+		{
+			<declaracion>
+			<instrucciones>
+		}
+
+	"""
+
 	def __init__(self,declaracion,instruccion):
 		self.declaracion = declaracion
 		self.instruccion = instruccion
@@ -551,6 +579,20 @@ class Bloque:
 
 		for i in self.instruccion:
 			i.type_check(TablaSimbolos)
+
+	def execute(self,dic):
+		dic = {}
+		Results.append(dic)
+
+		if self.declaracion:
+			self.declaracion.execute(dic)	
+
+		if self.instruccion:
+			for j in self.instruccion:
+				j.execute(dic)	
+
+		Results.pop()
+
 
 
 # Clase que define la CONDICION
