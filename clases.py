@@ -107,7 +107,7 @@ class Program:
 
 	def __init__(self,cuerpo):
 		self.cuerpo = cuerpo
-		#self.imprimir("")
+		self.imprimir("")
 		New_TS = TablaSimbolos(None)
 		self.type_check(New_TS)
 		self.execute({})
@@ -217,7 +217,7 @@ class Number:
 		return self.numero
 
 	def imprimir(self,espacio):
-		print espacio, "Number ", self.numero
+		print espacio, "Int ", self.numero
 
 	def type_check(self,TablaSimbolos):
 		return self.type
@@ -344,7 +344,7 @@ class Asignacion_Conj:
 				print "ERROR: El tipo del identificador y de la expresion son distintos"
 				sys.exit(1)
 
-		TablaSimbolos.insert(self.identificador.getValue(),self.expresion)
+		#TablaSimbolos.insert(self.identificador.getValue(),self.expresion)
 
 
 # Clase que define ASIGN
@@ -360,27 +360,28 @@ class Asignacion:
 		print espacio, "Valor"
 		self.expresion.imprimir(Identacion(espacio))
 
-	def type_check(self,TablaSimbolos):
-		if TablaSimbolos.contains(self.identificador.getValue()) == False:
+	def type_check(self,Tabla):
+		print "type_check asignacion"
+		if Tabla.contains(self.identificador.getValue()) == False:
 			print "ERROR: La variable '" + str(self.identificador.getValue()) + "' no ha sido declarada"
 			sys.exit(1)
 
 		else:
-			Tipo_id = self.identificador.type_check(TablaSimbolos)
-			Tipo_exp = self.expresion.type_check(TablaSimbolos)
+			Tipo_id = self.identificador.type_check(Tabla)
+			Tipo_exp = self.expresion.type_check(Tabla)
+			print Tipo_id, "ID"
+			print Tipo_exp, "EXP"
 
-			#if Tipo_id == "number" or Tipo_id == "boolean" or Tipo_exp == "number" or Tipo_exp == "boolean":
+			#if Tipo_id == "int" or Tipo_id == "boolean" or Tipo_exp == "int" or Tipo_exp == "boolean":
 			if Tipo_id <> Tipo_exp:
 				print "ERROR: El tipo del identificador y de la expresion son distintos"
 				sys.exit(1)
 
 		#TablaSimbolos.insert(self.identificador.getValue(),self.expresion)
-
+		# Tabla.insert(self.identificador.getValue(),self.expresion)
 
 	def execute(self,dic):
-		print "estoy en asignacion"
 		dic[self.identificador.getValue()] = self.expresion.execute(dic)
-		#print dic[self.identificador.getValue()]
 
 
 # Clase que define la funcion Scan
@@ -400,11 +401,11 @@ class Scan_Entrada(object):
 
   def execute(self,dic):
   	entrada = raw_input()
-  	if entrada== "true" and self.variable.run(dic) == "bool":
+  	if entrada== "true" and self.variable.execute(dic) == "bool":
   		entrada = True
-  	elif entrada== "false" and self.variable.run(dic) == "bool":
+  	elif entrada== "false" and self.variable.execute(dic) == "bool":
   		entrada = False
-  	elif isinstance(int(entrada),int) and self.variable.run(dic) == "int":
+  	elif isinstance(int(entrada),int) and self.variable.execute(dic) == "int":
   		entrada = int(entrada)
   	else:
   		print "ERROR: solo se aceptan booleanos o enteros."
@@ -454,7 +455,7 @@ class Imprimir_Expresion:
   def execute(self,dic):
   	aux = ""
   	for j in self.ImprimeExpresion:
-  		aux = aux + " " +str(j.execute(dic))
+  		aux = aux + str(j.execute(dic)) + " "
 		print aux
 
 
@@ -997,3 +998,58 @@ class Exp_Binaria:
 				else:
 					print "ERROR: El operador " + str(self.operador) + " no opera con enteros y conjuntos"
 					sys.exit(1)
+
+	def execute(self,dic):
+
+		ExpresionBaseR =  self.exp_der
+		ExpresionBaseL = self.exp_izq
+
+		RightType = ExpresionBaseR.execute(dic)
+		LeftType = ExpresionBaseL.execute(dic)
+
+		if isinstance(ExpresionBaseL, Identificador):
+			ExpresionBaseL = Number(ExpresionBaseL.execute(dic))
+
+		if isinstance(ExpresionBaseR, Identificador):
+			ExpresionBaseR = Number(ExpresionBaseR.execute(dic))
+
+		if isinstance(ExpresionBaseL, Exp_Binaria):
+			ExpresionBaseL = Number(ExpresionBaseL.execute(dic))
+
+		if isinstance(ExpresionBaseR, Exp_Binaria):
+			ExpresionBaseR = Number(ExpresionBaseR.execute(dic))
+
+		if isinstance(ExpresionBaseL, Exp_Unaria):
+			ExpresionBaseL = Number(ExpresionBaseL.execute(dic))
+
+		if isinstance(ExpresionBaseR, Exp_Unaria):
+			ExpresionBaseR = Number(ExpresionBaseR.execute(dic))
+
+		if isinstance(ExpresionBaseR,Number) and isinstance(ExpresionBaseL,Number):
+
+			if self.operador == "+":
+				return LeftType + RightType
+			elif self.operador == "-":
+				return LeftType - RightType
+			elif self.operador == "*":
+				return LeftType * RightType
+			elif self.operador == "/":
+				return LeftType / RightType
+			elif self.operador == "%":
+				return LeftType % RightType
+			elif self.operador == "div":
+				return int(LeftType / RightType)
+			elif self.operador == "mod":
+				return LeftType % RightType
+			elif self.operador == "==":
+				return LeftType == RightType
+			elif self.operador == "/=":
+				return LeftType != RightType
+			elif self.operador == "<":
+				return LeftType < RightType
+			elif self.operador == ">":
+				return LeftType > RightType
+			elif self.operador == "<=":
+				return LeftType <= RightType
+			elif self.operador == ">=":
+				return LeftType >= RightType
