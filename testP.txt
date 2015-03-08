@@ -3,14 +3,16 @@ program {
 	using
 
 		int a,b;
+		int e;
 		bool d;
 		set c;
 
 	in
 
-	#a = 3;
+	a = 3;
+	a = 4*5;
 	print "hola";
-	#b = 5;
+	#e = 5;
 #	b = 5;
 
 #	if (a == 3){

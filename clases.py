@@ -14,6 +14,7 @@
 #												 																										#
 #############################################################################
 
+
 import sys
 
 # DICCIONARIO DE SIMBOLOS
@@ -120,6 +121,7 @@ class Program:
 		self.cuerpo.type_check(TablaSimbolos)
 
 	def execute(self,dic):
+		print "estoy en program"
 		Results.append(dic)
 		self.cuerpo.execute(dic)
 
@@ -132,7 +134,7 @@ class Boolean:
 			self.value = "false"
 		else:
 			self.value = value						
-		self.type = "boolean"
+		self.type = "bool"
 
 	def getValue(self):
 		return self.value
@@ -208,10 +210,7 @@ class String:
 class Number:
 
 	def __init__(self,numero):
-		if numero == None:
-			self.numero = 0
-		else:
-			self.numero = numero
+		self.numero = numero
 		self.type = "int"
 
 	def getValue(self):
@@ -224,7 +223,6 @@ class Number:
 		return self.type
 
 	def execute(self,dic):
-		print self.getValue()
 		return self.getValue()
 
 
@@ -376,13 +374,13 @@ class Asignacion:
 				print "ERROR: El tipo del identificador y de la expresion son distintos"
 				sys.exit(1)
 
+		#TablaSimbolos.insert(self.identificador.getValue(),self.expresion)
 
-		TablaSimbolos.insert(self.identificador.getValue(),self.expresion)
 
 	def execute(self,dic):
 		print "estoy en asignacion"
 		dic[self.identificador.getValue()] = self.expresion.execute(dic)
-		print dic[self.identificador.getValue()]
+		#print dic[self.identificador.getValue()]
 
 
 # Clase que define la funcion Scan
@@ -663,7 +661,7 @@ class Condicion:
 	def type_check(self,TablaSimbolos):
 
 		if self.expresion:
-			if self.expresion.type_check(TablaSimbolos) <> "boolean":
+			if self.expresion.type_check(TablaSimbolos) <> "bool":
 				print "ERROR: El tipo de la condicion debe ser booleano"
 				sys.exit(1)
 
@@ -727,7 +725,7 @@ class Expre_For:
 		New_TS = TablaSimbolos(Tabla)
 		Tabla.born(New_TS)
 
-		New_TS.insert(self.identificador.getValue(),"number")
+		New_TS.insert(self.identificador.getValue(),"int")
 		Tipo_rango = self.rango.type_check(New_TS)
 
 		if self.instructions:
@@ -770,7 +768,7 @@ class Expre_Repeat1:
 			for i in self.instruccionRp:
 				i.type_check(TablaSimbolos)
 
-		if self.expression.type_check(TablaSimbolos) <> "boolean":
+		if self.expression.type_check(TablaSimbolos) <> "bool":
 			print "ERROR: El tipo de la condicion debe ser booleano"
 
 		if self.instructionWh:
@@ -806,7 +804,7 @@ class Expre_Repeat2:
 	#Funcion para construir la tabla de simbolos
 	def type_check(self,TablaSimbolos):
 
-		if self.expression.type_check(TablaSimbolos) <> "boolean":
+		if self.expression.type_check(TablaSimbolos) <> "bool":
 			print "ERROR: El tipo de la condicion debe ser booleano"
 
 		if self.instructionWh:
@@ -845,7 +843,7 @@ class Expre_Repeat3:
 			for i in self.instruccionRp:
 				i.type_check(TablaSimbolos)
 
-		if self.expression.type_check(TablaSimbolos) <> "boolean":
+		if self.expression.type_check(TablaSimbolos) <> "bool":
 			print "ERROR: El tipo de la condicion debe ser booleano"
 
 
@@ -863,20 +861,20 @@ class Exp_Unaria:
 	def type_check(self,TablaSimbolos):
 		Tipo_exp = self.expresion.type_check(TablaSimbolos)
 
-		if Tipo_exp == "boolean" and self.operador == "not":
-			return "boolean"
+		if Tipo_exp == "bool" and self.operador == "not":
+			return "bool"
 
-		elif Tipo_exp == "number" and self.operador == "-":
-			return "number"
+		elif Tipo_exp == "int" and self.operador == "-":
+			return "int"
 
 		elif Tipo_exp == "set" and self.operador == ">?":
-			return "number"
+			return "int"
 
 		elif Tipo_exp == "set" and self.operador == "<?":
-			return "number"
+			return "int"
 
 		elif Tipo_exp == "set" and self.operador == "$?":
-			return "number"
+			return "int"
 
 		else:
 			print "ERROR: La expresion "
@@ -916,7 +914,7 @@ class Exp_Binaria:
 		if isinstance(self.exp_der, Exp_Unaria):
 			self.exp_der = self.exp_der.type_check(TablaSimbolos)
 
-		# Tipo number op number = number
+		# Tipo int op int = int
 		A = self.operador == "+"
 		B = self.operador == "-"
 		C = self.operador == "*"
@@ -928,26 +926,26 @@ class Exp_Binaria:
 		G = self.operador == "\\"
 		I = self.operador == "><"
 
-		# Tipo number op set = set
+		# Tipo int op set = set
 		J = self.operador == "<+>"
 		K = self.operador == "<->"
 		L = self.operador == "<*>"
 		M = self.operador == "</>"
 		N = self.operador == "<%>"
 
-		# Tipo number op number = bool
+		# Tipo int op int = bool
 		# Tipo set op set = bool
 		# Tipo bool op bool = bool
 		O = self.operador == "=="
 		P = self.operador == "/="
 
-		# Tipo number op number = bool
+		# Tipo int op int = bool
 		Q = self.operador == ">"
 		R = self.operador == "<"
 		S = self.operador == ">="
 		T = self.operador == "<="
 
-		# Tipo number op set = bool
+		# Tipo int op set = bool
 		U = self.operador == "@"
 		
 		# Tipo bool op bool = bool
@@ -957,12 +955,12 @@ class Exp_Binaria:
 
 		if Tipo_exp_der == Tipo_exp_izq:
 
-			if Tipo_exp_der == "number":
+			if Tipo_exp_der == "int":
 				if A or B or C or D or E:
-					return "number"
+					return "int"
 
 				elif O or P or Q or R or S or T:
-					return "boolean"
+					return "bool"
 
 				else:
 					print "ERROR: El operador " + str(self.operador) + " no opera con enteros"
@@ -973,15 +971,15 @@ class Exp_Binaria:
 					return "set"
 
 				elif O or P:
-					return "boolean"
+					return "bool"
 
 				else:
 					print "ERROR: El operador " + str(self.operador) + " no opera con conjuntos"
 					sys.exit(1)
 
-			elif Tipo_exp_der == "boolean":
+			elif Tipo_exp_der == "bool":
 				if O or P or V or W:
-					return "boolean"
+					return "bool"
 
 				else:
 					print "ERROR: El operador " + str(self.operador) + " no opera con booleanos"
@@ -989,12 +987,12 @@ class Exp_Binaria:
 
 		else:
 
-			if Tipo_exp_izq == "number" and Tipo_exp_der == "set":
+			if Tipo_exp_izq == "int" and Tipo_exp_der == "set":
 				if J or K or L or M or N:
 					return "set"
 
 				elif U:
-					return "boolean"
+					return "bool"
 
 				else:
 					print "ERROR: El operador " + str(self.operador) + " no opera con enteros y conjuntos"
