@@ -109,7 +109,7 @@ class Program:
 		#self.imprimir("")
 		New_TS = TablaSimbolos(None)
 		self.type_check(New_TS)
-		#self.execute({})
+		self.execute({})
 
 	def imprimir(self,espacio):
 		print espacio, "PROGRAM "
@@ -391,18 +391,17 @@ class Scan_Entrada(object):
 
   def execute(self,dic):
   	entrada = raw_input()
+  	if entrada== "true" and self.variable.run(dic) == "bool":
+  		entrada = True
+  	elif entrada== "false" and self.variable.run(dic) == "bool":
+  		entrada = False
+  	elif isinstance(int(entrada),int) and self.variable.run(dic) == "int":
+  		entrada = int(entrada)
+  	else:
+  		print "ERROR: solo se aceptan booleanos o enteros."
+  		exit()
 
-		if entrada== "true" and self.variable.run(dic) == "bool":
-			entrada = True
-		elif entrada== "false" and self.variable.run(dic) == "bool": 
-			entrada = False 
-		elif isinstance(int(entrada),int) and self.variable.run(dic) == "int":
-			entrada = int(entrada)
-		else:
-			print "ERROR: solo se aceptan booleanos o enteros."
-			exit()
-
-		dic[self.variable.getValue()] = entrada
+  	dic[self.variable.getValue()] = entrada
          
  
 # Clase que define la funcion println
@@ -442,6 +441,15 @@ class Imprimir_Expresion:
   def type_check(self,TablaSimbolos):
   	for i in self.ImprimeExpresion:
   		i.type_check(TablaSimbolos)
+
+  def execute(self,dic):
+
+  	aux = ""
+
+  	for j in self.ImprimeExpresion:
+  		aux = aux + " " +str(j.run(dic))
+
+		print aux
 
 
 # Clase que define la LISTA DE DECLARACIONES BASE
@@ -543,6 +551,8 @@ class Declaracion:
 		return New_TS
 
 	def execute(self,dic):
+		if isinstance(self.lista,Lista_Declaracion_Base):
+			print "Si soy"
 		self.lista.execute(dic)
 
 
@@ -581,6 +591,7 @@ class Bloque:
 			i.type_check(TablaSimbolos)
 
 	def execute(self,dic):
+		print "Estoy puteando a ney"
 		dic = {}
 		Results.append(dic)
 
