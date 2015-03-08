@@ -109,7 +109,7 @@ class Program:
 		#self.imprimir("")
 		New_TS = TablaSimbolos(None)
 		self.type_check(New_TS)
-		#self.execute({})
+		self.execute({})
 
 	def imprimir(self,espacio):
 		print espacio, "PROGRAM "
@@ -142,6 +142,15 @@ class Boolean:
 
 	def type_check(self,TablaSimbolos):
 		return self.type
+
+	def execute(self,dic):
+		if self.value == "true":
+			return True
+		elif self.value == "false":
+			return False
+
+		print "/ERROR/: El booleano esta mal declarado "
+		sys.exit(1)
 
 # Clase que defina a los identificadores
 class Identificador:
@@ -319,11 +328,6 @@ class Asignacion_Conj:
 		print espacio, "ASIGNACION "
 		self.identificador.imprimir(Identacion(espacio))
 		self.expresion.imprimir(Identacion(espacio))
-		# print espacio, "Valor"
-		# print espacio, "Set"
-		# if self.expresion:
-		# 	for j in self.expresion:
-		# 		j.imprimir(Identacion(espacio))
 
 	def type_check(self,TablaSimbolos):
 		if TablaSimbolos.dic.has_key(self.identificador.getValue()) == False:
@@ -373,6 +377,11 @@ class Asignacion:
 
 		TablaSimbolos.insert(self.identificador.getValue(),self.expresion)
 
+	def execute(self,dic):
+		print "estoy en asignacion"
+		dic[self.identificador.getValue()] = self.expresion.execute(dic)
+		print dic[self.identificador.getValue()]
+
 
 # Clase que define la funcion Scan
 class Scan_Entrada(object):
@@ -390,7 +399,7 @@ class Scan_Entrada(object):
   				  "' no coincide con SCAN"
 
   def execute(self,dic):
-  	entrada = raw_input()
+  	#entrada = raw_input()
 
 		if entrada== "true" and self.variable.run(dic) == "bool":
 			entrada = True
@@ -543,6 +552,7 @@ class Declaracion:
 		return New_TS
 
 	def execute(self,dic):
+		print "estoy en declaracion"
 		self.lista.execute(dic)
 
 
@@ -581,6 +591,7 @@ class Bloque:
 			i.type_check(TablaSimbolos)
 
 	def execute(self,dic):
+		print "estoy en bloque"
 		dic = {}
 		Results.append(dic)
 

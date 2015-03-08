@@ -6,7 +6,6 @@
 ##															    SETLAN												  		   ##
 #############################################################################
 #																																						#
-#														---(Tercera Entrega)---									 				#
 #														 ANALIZADOR SINTÁCTICO													#
 #																		Parser																	#
 #Integrantes:																																#
