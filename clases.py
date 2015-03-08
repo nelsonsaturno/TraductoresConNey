@@ -42,7 +42,9 @@ DicSimbolos = {
 							"/=" : "NotEquiv",
 							"&" : "And",
 							"|" : "Or",
-							} 
+							}
+
+Results = []
 
 # TABLA DE SIMBOLOS
 class TablaSimbolos:
@@ -149,12 +151,22 @@ class Identificador:
 	def imprimir(self,espacio):
 		print espacio, "Variable ", str(self.value)
 
+	def buscarEnDic(self,dic,identificador):
+		i = len(Results) - 1
+		while i >= 0:
+			if Results[i].has_key(identificador):
+				return Results[i][identificador]
+			i = i-1
+
 	def type_check(self,TablaSimbolos):
 		if TablaSimbolos.contains(self.value) == False:
 			print "ERROR: El identificador no se encuentra en la Tabla de Simbolos: " + str(self.value)
 			sys.exit(1)
 
 		return TablaSimbolos.Tipo(self.value)
+
+	def execute(self,dic):
+		return self.buscarEnDic(dic,self.value)
 
 
 # Clase que define a los String
@@ -172,6 +184,9 @@ class String:
 
 	def type_check(self,TablaSimbolos):
 		return self.type
+
+	def execute(self,dic):
+		return self.getValue()
 
 
 # Clase que define a los Numeros
@@ -192,6 +207,9 @@ class Number:
 
 	def type_check(self,TablaSimbolos):
 		return self.type
+
+	def execute(self,dic):
+		return self.getValue()
 
 
 # Clase que define a los Conjuntos
@@ -217,10 +235,11 @@ class Sets:
 	#  REVISAR
 	
 	def type_check(self,TablaSimbolos):
+		print "type_check set"
 		if isinstance(self.lista,list):
 			for i in self.lista:
 				if i.type_check(TablaSimbolos):
-					pass
+					print str(i.type_check(TablaSimbolos))
 				else:
 					print "ERROR: No se puede asignar '" + str(i) + \
 								"' al dentro del conjunto"
@@ -228,6 +247,9 @@ class Sets:
 			return self.type
 
 	#############
+
+	def execute(self,dic):
+		return self.getValue()
 
 
 # Clase que define a los conjuntos
@@ -287,6 +309,7 @@ class Asignacion_Conj:
 		self.expresion = expresion
 		self.identificador = identificador
 
+
 	def imprimir(self,espacio):
 		print espacio, "ASIGNACION "
 		self.identificador.imprimir(Identacion(espacio))
@@ -299,7 +322,8 @@ class Asignacion_Conj:
 
 	def type_check(self,TablaSimbolos):
 		if TablaSimbolos.dic.has_key(self.identificador.getValue()) == False:
-			print "ERROR: Variable '" + str(self.identificador.getValue()) + "' no esta declarada dentro del alcance"
+			print "ERROR: Variable '" + str(self.identificador.getValue()) + \
+						"' no esta declarada dentro del alcance"
 			sys.exit(1)
 
 		else:
@@ -357,7 +381,23 @@ class Scan_Entrada(object):
 
   def type_check(self,TablaSimbolos):
   	if TablaSimbolos.contains(self.variable.getValue()) == False:
-  		print "ERROR: El valor de la variable '" + str(self.variable) + "' no coincide con SCAN"
+  		print "ERROR: El valor de la variable '" + str(self.variable) +\
+  				  "' no coincide con SCAN"
+
+  def execute(self,dic):
+  	entrada = raw_input()
+
+		if entrada== "true" and self.variable.run(dic) == "bool":
+			entrada = True
+		elif entrada== "false" and self.variable.run(dic) == "bool": 
+			entrada = False 
+		elif isinstance(int(entrada),int) and self.variable.run(dic) == "int":
+			entrada = int(entrada)
+		else:
+			print "ERROR: solo se aceptan booleanos o enteros."
+			exit()
+
+		dic[self.variable.getValue()] = entrada
          
  
 # Clase que define la funcion println
