@@ -251,6 +251,7 @@ class Sets:
 			for i in self.lista:
 				if i.type_check(TablaSimbolos):
 					#print str(i.type_check(TablaSimbolos))
+					pass
 				else:
 					print "ERROR: No se puede asignar '" + str(i) + \
 								"' al dentro del conjunto"
