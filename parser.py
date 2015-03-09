@@ -71,7 +71,7 @@ def p_Asignacion_Conj(p):
 										 | id Equal Sets'''
 
 	if len(p) == 5:
-		p[4] = None;
+		p[3] = [];
 
 	p[0] = Clase.Asignacion_Conj(p[1],p[3])
 

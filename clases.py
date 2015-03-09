@@ -121,7 +121,6 @@ class Program:
 		self.cuerpo.type_check(TablaSimbolos)
 
 	def execute(self,dic):
-		print "estoy en program"
 		Results.append(dic)
 		self.cuerpo.execute(dic)
 
@@ -344,7 +343,15 @@ class Asignacion_Conj:
 				print "ERROR: El tipo del identificador y de la expresion son distintos"
 				sys.exit(1)
 
-		#TablaSimbolos.insert(self.identificador.getValue(),self.expresion)
+	def execute(self,dic):
+		if isinstance(expresion,list):
+			if len(expresion) == 0:
+				dic[self.identificador.getValue()] = set()
+			else:
+				aux = set()
+				for i in expresion:
+					aux.add(i)
+				dic[self.identificador.getValue()] = aux
 
 
 # Clase que define ASIGN
@@ -361,7 +368,6 @@ class Asignacion:
 		self.expresion.imprimir(Identacion(espacio))
 
 	def type_check(self,Tabla):
-		print "type_check asignacion"
 		if Tabla.contains(self.identificador.getValue()) == False:
 			print "ERROR: La variable '" + str(self.identificador.getValue()) + "' no ha sido declarada"
 			sys.exit(1)
@@ -369,8 +375,6 @@ class Asignacion:
 		else:
 			Tipo_id = self.identificador.type_check(Tabla)
 			Tipo_exp = self.expresion.type_check(Tabla)
-			print Tipo_id, "ID"
-			print Tipo_exp, "EXP"
 
 			#if Tipo_id == "int" or Tipo_id == "boolean" or Tipo_exp == "int" or Tipo_exp == "boolean":
 			if Tipo_id <> Tipo_exp:
@@ -598,7 +602,6 @@ class Bloque:
 			i.type_check(TablaSimbolos)
 
 	def execute(self,dic):
-		print "estoy en bloque"
 		dic = {}
 		Results.append(dic)
 
