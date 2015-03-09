@@ -121,7 +121,6 @@ class Program:
 		self.cuerpo.type_check(TablaSimbolos)
 
 	def execute(self,dic):
-		print "estoy en program"
 		Results.append(dic)
 		self.cuerpo.execute(dic)
 
@@ -146,7 +145,6 @@ class Boolean:
 		return self.type
 
 	def execute(self,dic):
-		print "Estoy en execute de bool"
 		if self.value == "true":
 			return True
 		elif self.value == "false":
@@ -249,7 +247,6 @@ class Sets:
 	#  REVISAR
 	
 	def type_check(self,TablaSimbolos):
-		print "type_check set"
 		if isinstance(self.lista,list):
 			for i in self.lista:
 				if i.type_check(TablaSimbolos):
@@ -361,7 +358,6 @@ class Asignacion:
 		self.expresion.imprimir(Identacion(espacio))
 
 	def type_check(self,Tabla):
-		print "type_check asignacion"
 		if Tabla.contains(self.identificador.getValue()) == False:
 			print "ERROR: La variable '" + str(self.identificador.getValue()) + "' no ha sido declarada"
 			sys.exit(1)
@@ -369,8 +365,6 @@ class Asignacion:
 		else:
 			Tipo_id = self.identificador.type_check(Tabla)
 			Tipo_exp = self.expresion.type_check(Tabla)
-			print Tipo_id, "ID"
-			print Tipo_exp, "EXP"
 
 			#if Tipo_id == "int" or Tipo_id == "boolean" or Tipo_exp == "int" or Tipo_exp == "boolean":
 			if Tipo_id <> Tipo_exp:
@@ -598,7 +592,6 @@ class Bloque:
 			i.type_check(TablaSimbolos)
 
 	def execute(self,dic):
-		print "estoy en bloque"
 		dic = {}
 		Results.append(dic)
 
@@ -882,6 +875,22 @@ class Exp_Unaria:
 			self.expresion.imprimir("")
 			sys.exit(1)
 
+	def execute(self,dic):
+		Tipo_exp = self.expresion.execute(dic)
+
+		if isinstance(Tipo_exp,bool) and self.operador == "not":
+			return not(Tipo_exp)
+
+		elif isinstance(Tipo_exp,int) and self.operador == "-":
+			return -(Tipo_exp)
+
+		else:
+
+			print "ERROR: La expresion "
+			self.expresion.imprimir("")
+			sys.exit(1)
+
+
 
 # Clase que define la EXPRESION BINARIA
 class Exp_Binaria:
@@ -950,8 +959,8 @@ class Exp_Binaria:
 		U = self.operador == "@"
 		
 		# Tipo bool op bool = bool
-		V = self.operador == "&"
-		W = self.operador == "|"
+		V = self.operador == "and"
+		W = self.operador == "or"
 
 
 		if Tipo_exp_der == Tipo_exp_izq:
@@ -1025,6 +1034,8 @@ class Exp_Binaria:
 		if isinstance(ExpresionBaseR, Exp_Unaria):
 			ExpresionBaseR = Number(ExpresionBaseR.execute(dic))
 
+
+		# para operaciones con int op int
 		if isinstance(ExpresionBaseR,Number) and isinstance(ExpresionBaseL,Number):
 
 			if self.operador == "+":
@@ -1037,19 +1048,60 @@ class Exp_Binaria:
 				return LeftType / RightType
 			elif self.operador == "%":
 				return LeftType % RightType
-			elif self.operador == "div":
-				return int(LeftType / RightType)
-			elif self.operador == "mod":
-				return LeftType % RightType
+
 			elif self.operador == "==":
 				return LeftType == RightType
 			elif self.operador == "/=":
 				return LeftType != RightType
-			elif self.operador == "<":
-				return LeftType < RightType
 			elif self.operador == ">":
 				return LeftType > RightType
-			elif self.operador == "<=":
-				return LeftType <= RightType
+			elif self.operador == "<":
+				return LeftType < RightType
 			elif self.operador == ">=":
 				return LeftType >= RightType
+			elif self.operador == "<=":
+				return LeftType <= RightType
+
+		# para operaciones con bool op bool
+		if isinstance(ExpresionBaseR,Boolean) and isinstance(ExpresionBaseL,Boolean):
+
+			if self.operador == "and":
+				return LeftType and RightType
+			elif self.operador == "or":
+				return LeftType or RightType
+			elif self.operador == "==":
+				return LeftType == RightType
+			elif self.operador == "/=":
+				return LeftType != RightType
+
+		# para operaciones con set op set
+		if isinstance(ExpresionBaseR,Sets) and isinstance(ExpresionBaseL,Sets):
+
+			if self.operador == "++":
+				return True
+			elif self.operador == "\\":
+				return True
+			elif self.operador == "><":
+				return True
+
+			elif self.operador == "==":
+				return LeftType == RightType
+			elif self.operador == "/=":
+				return LeftType != RightType
+
+		# para operaciones con int op set
+		if isinstance(ExpresionBaseR,Number) and isinstance(ExpresionBaseL,Sets):
+
+			if self.operador == "<+>":
+				return True
+			elif self.operador == "<->":
+				return True
+			elif self.operador == "<*>":
+				return True
+			elif self.operador == "</>":
+				return True
+			elif self.operador == "<%>":
+				return True
+
+			elif self.operador == "@":
+				return True

@@ -15,6 +15,13 @@ program {
 	a = 3;
 	a = 4 * 5;
 	print a;
+
+	b = -3;
+	print b;
+
+	d = true and false;
+	print d;
+
 #	b = 5;
 
 #	if (a == 3){
