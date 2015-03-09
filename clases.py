@@ -107,7 +107,7 @@ class Program:
 
 	def __init__(self,cuerpo):
 		self.cuerpo = cuerpo
-		self.imprimir("")
+		#self.imprimir("")
 		New_TS = TablaSimbolos(None)
 		self.type_check(New_TS)
 		self.execute({})
@@ -237,7 +237,7 @@ class Sets:
 	def imprimir(self,espacio):
 		print espacio, "Set "
 		print espacio, "Valor(es)"
-		if isinstance(self.lista,list):
+		if len(self.lista) > 0:
 			for i in self.lista:
 				i.imprimir(Identacion(espacio))
 		else:
@@ -250,7 +250,7 @@ class Sets:
 		if isinstance(self.lista,list):
 			for i in self.lista:
 				if i.type_check(TablaSimbolos):
-					print str(i.type_check(TablaSimbolos))
+					#print str(i.type_check(TablaSimbolos))
 				else:
 					print "ERROR: No se puede asignar '" + str(i) + \
 								"' al dentro del conjunto"
@@ -317,7 +317,15 @@ class Expre_Conjunto:
 class Asignacion_Conj:
 
 	def __init__(self,identificador,expresion):
-		self.expresion = expresion
+		if isinstance(expresion,list):
+			if len(expresion) == 0:
+				self.expresion = set()
+			else:
+				self.expresion = set()
+				for i in expresion:
+					self.expresion.add(i)
+		else:
+			self.expresion = expresion
 		self.identificador = identificador
 
 
@@ -536,7 +544,7 @@ class Declaracion:
 		Tabla.born(New_TS)
 
 		if self.lista:
-			print "SCOPE "
+			#print "SCOPE "
 			if isinstance(self.lista,list):
 				for i in self.lista:
 					if isinstance(i, Lista_Declaracion_Base):
@@ -556,7 +564,7 @@ class Declaracion:
 					valor = "false"
 				if New_TS.dic[i] == "set":
 					valor = "{}"
-				print "  ","Variable: ", i, "| Tipo: ", New_TS.dic[i], "| Valor: ", valor
+				#print "  ","Variable: ", i, "| Tipo: ", New_TS.dic[i], "| Valor: ", valor
 
 		return New_TS
 

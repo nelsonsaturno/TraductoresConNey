@@ -22,6 +22,8 @@ program {
 	d = true and false;
 	print d;
 
+	c = {1,2};
+
 #	b = 5;
 
 #	if (a == 3){

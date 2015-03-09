@@ -72,7 +72,7 @@ def p_Asignacion_Conj(p):
 
 	if len(p) == 5:
 		p[3] = [];
-
+	print p[3].imprimir
 	p[0] = Clase.Asignacion_Conj(p[1],p[3])
 
 
