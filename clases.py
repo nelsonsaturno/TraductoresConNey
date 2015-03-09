@@ -293,24 +293,24 @@ class Sets:
 
 
 #Clase que define una expresion de tipo conjunto
-class Expre_Conjunto:
+# class Expre_Conjunto:
 
-	def __init__(self,expresion):
-		self.expresion = expresion
+# 	def __init__(self,expresion):
+# 		self.expresion = expresion
 
-	def imprimir(self,espacio):
-		print espacio, "Conjunto"
-		print espacio, "Valor(es)"
-		if self.expresion:
-			for j in self.expresion:
-				j.imprimir(Identacion(espacio))
+# 	def imprimir(self,espacio):
+# 		print espacio, "Conjunto"
+# 		print espacio, "Valor(es)"
+# 		if self.expresion:
+# 			for j in self.expresion:
+# 				j.imprimir(Identacion(espacio))
 
-	def type_check(self,TablaSimbolos):
-		if isinstance(self.expresion,list):
-			for i in self.expresion:
-				i.type_check(TablaSimbolos)
-		else:
-			self.expresion.type_check(TablaSimbolos)
+# 	def type_check(self,TablaSimbolos):
+# 		if isinstance(self.expresion,list):
+# 			for i in self.expresion:
+# 				i.type_check(TablaSimbolos)
+# 		else:
+# 			self.expresion.type_check(TablaSimbolos)
 
 
 # Clase que define ASIGN
@@ -387,11 +387,12 @@ class Asignacion:
 				print "ERROR: El tipo del identificador y de la expresion son distintos"
 				sys.exit(1)
 
-		#TablaSimbolos.insert(self.identificador.getValue(),self.expresion)
 		# Tabla.insert(self.identificador.getValue(),self.expresion)
 
 	def execute(self,dic):
 		dic[self.identificador.getValue()] = self.expresion.execute(dic)
+		print "ejecuta la asignacion"
+		print self.expresion.execute(dic)
 
 
 # Clase que define la funcion Scan
@@ -442,6 +443,12 @@ class ImprimirLn_Expresion:
   def type_check(self,TablaSimbolos):
   	for i in self.ImprimeExpresion:
   		i.type_check(TablaSimbolos)
+
+  def execute(self,dic):
+  	aux = ""
+  	for j in self.ImprimeExpresion:
+  		aux = aux + str(j.execute(dic)) + " "
+		print aux,"\n"
  
  
 # Clase que define la funcion print
@@ -602,7 +609,8 @@ class Bloque:
 		print espacio, "BLOQUE_END"
 
 	def type_check(self,TablaSimbolos):
-		TablaSimbolos = self.declaracion.type_check(TablaSimbolos)
+		if self.declaracion:
+			TablaSimbolos = self.declaracion.type_check(TablaSimbolos)
 
 		for i in self.instruccion:
 			i.type_check(TablaSimbolos)
@@ -683,21 +691,37 @@ class Condicion:
 		else:
 			self.cuerpo.type_check(TablaSimbolos)
 
-		if self.condicion_ElseIf:
-			if isinstance(self.condicion_ElseIf,list):
-				for i in self.condicion_ElseIf:
-					i.type_check(TablaSimbolos)
-			else:
-				self.type_check(TablaSimbolos)
+		# if self.condicion_ElseIf:
+		# 	if isinstance(self.condicion_ElseIf,list):
+		# 		for i in self.condicion_ElseIf:
+		# 			i.type_check(TablaSimbolos)
+		# 	else:
+		# 		self.type_check(TablaSimbolos)
 
 		if self.condicion_Else:
 			if isinstance(self.condicion_Else,list):
 				for i in self.condicion_Else:
 					i.type_check(TablaSimbolos)
 			else:
-				self.type_check(TablaSimbolos)
+				self.condicion_Else.type_check(TablaSimbolos)
 
 		###############################
+
+	def execute(self,dic):
+		if self.expresion.execute(dic):
+			if self.cuerpo:
+				if isinstance(self.cuerpo,list):
+					for j in self.cuerpo:
+						j.execute(dic)
+				else:
+					self.cuerpo.execute(dic)
+		else:	
+			if self.condicion_Else:
+				if isinstance(self.condicion_Else,list):
+					for k in self.condicion_Else:
+						k.execute(dic)
+				else:
+					self.condicion_Else.execute(dic)
 
 
 # Clase que define El ciclo for
@@ -900,6 +924,17 @@ class Exp_Unaria:
 		elif isinstance(Tipo_exp,int) and self.operador == "-":
 			return -(Tipo_exp)
 
+		elif isinstance(Tipo_exp,set) and self.operador == "<?":
+			tupla = tuple(Tipo_exp)
+			return min(tupla)
+
+		elif isinstance(Tipo_exp,set) and self.operador == ">?":
+			tupla = tuple(Tipo_exp)
+			return max(tupla)
+
+		elif isinstance(Tipo_exp,set) and self.operador == "$?":
+			return len(Tipo_exp)
+
 		else:
 
 			print "ERROR: La expresion "
@@ -1094,11 +1129,11 @@ class Exp_Binaria:
 		if isinstance(ExpresionBaseR,Sets) and isinstance(ExpresionBaseL,Sets):
 
 			if self.operador == "++":
-				return True
+				return LeftType | RightType
 			elif self.operador == "\\":
-				return True
+				return LeftType - RightType
 			elif self.operador == "><":
-				return True
+				return LeftType & RightType
 
 			elif self.operador == "==":
 				return LeftType == RightType
@@ -1109,15 +1144,39 @@ class Exp_Binaria:
 		if isinstance(ExpresionBaseR,Number) and isinstance(ExpresionBaseL,Sets):
 
 			if self.operador == "<+>":
-				return True
+				tupla = tuple(RightType)
+				for i in tupla:
+					LeftType + i
+				return tupla   
+				###### retornar tupla o una var que contenga la tupla nueva
+
 			elif self.operador == "<->":
-				return True
+				tupla = tuple(RightType)
+				for i in tupla:
+					LeftType - i
+				return tupla   
+				###### retornar tupla o una var que contenga la tupla nueva
+
 			elif self.operador == "<*>":
-				return True
+				tupla = tuple(RightType)
+				for i in tupla:
+					LeftType * i
+				return tupla   
+				###### retornar tupla o una var que contenga la tupla nueva
+
 			elif self.operador == "</>":
-				return True
+				tupla = tuple(RightType)
+				for i in tupla:
+					LeftType / i
+				return tupla   
+				###### retornar tupla o una var que contenga la tupla nueva
+
 			elif self.operador == "<%>":
-				return True
+				tupla = tuple(RightType)
+				for i in tupla:
+					LeftType % i
+				return tupla   
+				###### retornar tupla o una var que contenga la tupla nueva
 
 			elif self.operador == "@":
-				return True
+				return LeftType in RightType

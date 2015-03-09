@@ -2,7 +2,7 @@ program {
 
 	using
 
-		int a,b;
+		int a,b,f;
 		int e;
 		bool d;
 		set c;
@@ -14,7 +14,7 @@ program {
 
 	a = 3;
 	a = 4 * 5;
-	print a;
+	println a;
 
 	b = -3;
 	print b;
@@ -22,19 +22,21 @@ program {
 	d = true and false;
 	print d;
 
-	c = {1,2};
+	#c = {1,2,3};
+	#f = >? c;
 
-#	b = 5;
+	if (a == 20){
+		print "entro en el if";
+		b = 4;
+		print "soy la b";
+		print b;
+	}
+	else {
+		b = 5;
+	};
 
-#	if (a == 3){
-#		using
-#			int e;
-#		in
-#		e = a;
-#		b = 4;
-#	}
-#	else
-#		b = 5;
+	print "soy la b";
+	print b;
 
 	#b = >? {4,1,2} /= 4 * 1;
 
