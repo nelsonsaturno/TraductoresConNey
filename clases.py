@@ -237,28 +237,22 @@ class Sets:
 	def imprimir(self,espacio):
 		print espacio, "Set "
 		print espacio, "Valor(es)"
-		if len(self.lista) > 0:
+		if isinstance(self.lista,list):
 			for i in self.lista:
 				i.imprimir(Identacion(espacio))
 		else:
 			self.lista.imprimir(Identacion(espacio))
-
-	#############
-	#  REVISAR
 	
 	def type_check(self,TablaSimbolos):
 		if isinstance(self.lista,list):
 			for i in self.lista:
 				if i.type_check(TablaSimbolos):
-					#print str(i.type_check(TablaSimbolos))
-					pass
+					print str(i.type_check(TablaSimbolos))
 				else:
 					print "ERROR: No se puede asignar '" + str(i) + \
 								"' al dentro del conjunto"
   	 			sys.exit(1)
 			return self.type
-
-	#############
 
 	def execute(self,dic):
 		return self.getValue()
@@ -318,15 +312,7 @@ class Sets:
 class Asignacion_Conj:
 
 	def __init__(self,identificador,expresion):
-		if isinstance(expresion,list):
-			if len(expresion) == 0:
-				self.expresion = set()
-			else:
-				self.expresion = set()
-				for i in expresion:
-					self.expresion.add(i)
-		else:
-			self.expresion = expresion
+		self.expresion = expresion
 		self.identificador = identificador
 
 
@@ -392,8 +378,6 @@ class Asignacion:
 
 	def execute(self,dic):
 		dic[self.identificador.getValue()] = self.expresion.execute(dic)
-		print "ejecuta la asignacion"
-		print self.expresion.execute(dic)
 
 
 # Clase que define la funcion Scan
@@ -684,8 +668,6 @@ class Condicion:
 				print "ERROR: El tipo de la condicion debe ser booleano"
 				sys.exit(1)
 
-		######### REVISAR ##########
-
 		if isinstance(self.cuerpo,list):
 			for i in self.cuerpo:
 				i.type_check(TablaSimbolos)
@@ -706,7 +688,6 @@ class Condicion:
 			else:
 				self.condicion_Else.type_check(TablaSimbolos)
 
-		###############################
 
 	def execute(self,dic):
 		if self.expresion.execute(dic):
